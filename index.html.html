@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>for kimchi · a valentine envelope</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fbe9f0;
+            background-image: radial-gradient(circle at 10% 20%, #ffd9e6, #fce3e9 60%, #fff0f0);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, sans-serif;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* falling flowers */
+        .flower-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.65;
+            color: #ffacc7;
+            filter: drop-shadow(0 6px 8px #feb0c2);
+            animation: fall linear infinite;
+            user-select: none;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-20vh) rotate(0deg);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(120vh) rotate(300deg);
+                opacity: 0.1;
+            }
+        }
+
+        /* envelope container */
+        .envelope-wrapper {
+            position: relative;
+            z-index: 20;
+            max-width: 650px;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .envelope-wrapper:active {
+            transform: scale(0.99);
+        }
+
+        .envelope {
+            background: #ffe4e1;
+            background: linear-gradient(145deg, #fce0dc, #ffd3d0);
+            border-radius: 30px 30px 20px 20px;
+            box-shadow: 0 25px 30px -10px rgba(210, 130, 150, 0.5),
+                        0 10px 0 #d88b9e,
+                        0 0 0 2px #fff9f7 inset;
+            padding: 2.8rem 2rem 2.2rem;
+            position: relative;
+            border: 2px solid #ffeae5;
+            transition: box-shadow 0.2s;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: -28px;
+            left: 10%;
+            width: 80%;
+            height: 50px;
+            background: #fec9c3;
+            background: linear-gradient(145deg, #ffc9c9, #ffb9bb);
+            border-radius: 40px 40px 20px 20px;
+            box-shadow: 0 -5px 0 #e69bb0, 0 5px 10px rgba(0,0,0,0.05);
+            border: 2px solid #fff8f5;
+            border-bottom: none;
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+            transition: top 0.3s ease-in-out, transform 0.3s;
+            z-index: 5;
+        }
+
+        .envelope.open::before {
+            top: -48px;
+            transform: rotate(3deg);
+            box-shadow: 0 -8px 8px rgba(0,0,0,0.05);
+        }
+
+        .envelope .heart-flap {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            color: #ff5979;
+            filter: drop-shadow(0 4px 3px #fbb);
+            z-index: 10;
+            transition: top 0.3s;
+            text-shadow: 0 2px 0 white;
+        }
+
+        .envelope.open .heart-flap {
+            top: -38px;
+        }
+
+        .letter {
+            background: #fffaf5;
+            background: linear-gradient(145deg, #fffaf0, #fff7f0);
+            border-radius: 25px 15px 25px 15px;
+            padding: 1.8rem 1.8rem 2.2rem;
+            box-shadow: inset 0 -2px 0 #ffe2d6, 0 10px 15px -10px #c58b9b;
+            border: 2px solid #ffe4dd;
+            transition: opacity 0.3s ease, transform 0.3s;
+            text-align: center;
+            transform-origin: top;
+        }
+
+        .envelope:not(.open) .letter {
+            opacity: 0.5;
+            transform: scaleY(0.98);
+            filter: blur(1px);
+            pointer-events: none;
+        }
+
+        .envelope.open .letter {
+            opacity: 1;
+            transform: scaleY(1);
+            filter: blur(0);
+        }
+
+        .letter h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #a54e6a;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 0 #fcd5dd;
+        }
+
+        .letter .to {
+            font-size: 1.5rem;
+            color: #b7677c;
+            font-style: italic;
+            margin-bottom: 1.8rem;
+            border-bottom: 2px dashed #fec7cf;
+            padding-bottom: 0.6rem;
+            display: inline-block;
+        }
+
+        .letter .message {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #683c4b;
+            margin: 1.8rem 0 1.5rem;
+            background: #fff0ed;
+            padding: 1.2rem 1.5rem;
+            border-radius: 40px 15px 40px 15px;
+            box-shadow: inset 0 0 0 2px white, 0 5px 0 #fbc1cf;
+        }
+
+        .letter .signature {
+            font-size: 1.3rem;
+            color: #a5586b;
+            margin-top: 1.5rem;
+            font-weight: 500;
+        }
+
+        .letter .signature i {
+            color: #ff6f91;
+        }
+
+        /* song title display */
+        .song-info {
+            margin-top: 1.2rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #ad7a86;
+            background: #ffeae7c9;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid #fff;
+            box-shadow: 0 4px 8px rgba(255, 175, 195, 0.3);
+        }
+
+        .song-info i {
+            color: #ff6f91;
+            font-size: 1rem;
+        }
+
+        .song-info span {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .hint {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #ad7a86;
+            background: #ffeae7c9;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+            border: 1px solid #fff;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            background: #ffabbd;
+            width: 50px;
+            height: 50px;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+            box-shadow: 0 5px 0 #d3748f, 0 8px 15px #fba5b9;
+            border: 2px solid #fff2f0;
+            z-index: 15;
+            transition: 0.2s;
+        }
+
+        .seal::after {
+            content: '♥';
+            position: absolute;
+            top: 5px;
+            left: 12px;
+            font-size: 1.8rem;
+            color: #fff;
+            transform: rotate(-45deg);
+            text-shadow: 0 2px 2px #c05e79;
+        }
+
+        /* pesan error audio */
+        .audio-error {
+            font-size: 0.85rem;
+            color: #b7677c;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .audio-error.visible {
+            display: block;
+        }
+
+        @media (max-width: 500px) {
+            .envelope { padding: 1.8rem 1rem; }
+            .letter h2 { font-size: 1.8rem; }
+            .letter .message { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="flower-rain" id="flowerRain"></div>
+
+    <div class="envelope-wrapper" id="envelopeWrapper">
+        <div class="envelope" id="envelope">
+            <div class="heart-flap">❤️</div>
+
+            <div class="letter">
+                <h2>💌  Valentine  💌</h2>
+                <div class="to">for my kid, Kimchi</div>
+                <div class="message">
+                    🌸  Happy Valentine's Day!  🌸<br>
+                    Just like these falling flowers,<br>
+                    my wishes flutter down to you.<br>
+                    Thanks for being such a wonderful kid!
+                </div>
+                <div class="signature">
+                    <i class="fas fa-heart"></i>  with love  <i class="fas fa-heart"></i>
+                </div>
+
+                <!-- Song title display -->
+                <div class="song-info">
+                    <i class="fas fa-music"></i>
+                    <span>🎵 Valentine - Laufey (acoustic)</span>
+                    <i class="fas fa-heart" style="color: #ff8da1; font-size: 0.8rem;"></i>
+                </div>
+                
+                <!-- Audio element dengan multiple sources untuk kompatibilitas -->
+                <audio id="bgMusic" preload="auto" loop>
+                    <!-- Coba dengan nama file yang umum -->
+                    <source src="valentine.mp3" type="audio/mpeg">
+                    <source src="valentine-laufey.mp3" type="audio/mpeg">
+                    <source src="Valentine.mp3" type="audio/mpeg">
+                    <source src="Valentine-Laufey.mp3" type="audio/mpeg">
+                    <source src="Laufey-Valentine.mp3" type="audio/mpeg">
+                    <source src="Valentine Laufey.mp3" type="audio/mpeg">
+                    <!-- Fallback ke file asli -->
+                    <source src="bbb.mp3" type="audio/mpeg">
+                    Your browser does not support audio.
+                </audio>
+                
+                <!-- Pesan error (hidden by default) -->
+                <div class="audio-error" id="audioErrorMessage">
+                    <i class="fas fa-exclamation-circle"></i> 
+                    Lagu tidak ditemukan. Pastikan file "valentine.mp3" ada di folder yang sama.
+                </div>
+                
+                <!-- Small hint -->
+                <div class="hint">
+                    <i class="fas fa-hand-pointer"></i> click envelope to open/close
+                </div>
+            </div>
+
+            <div class="seal"></div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script>
+        (function() {
+            // Flower animation
+            const rainContainer = document.getElementById('flowerRain');
+            const flowerEmojis = ['🌸', '🌼', '🌷', '🌹', '🌺', '💐', '🌸', '🌼'];
+
+            function createFlower() {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                const randomEmoji = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+                flower.textContent = randomEmoji;
+                const size = 1.5 + Math.random() * 2;
+                flower.style.fontSize = size + 'rem';
+                flower.style.left = Math.random() * 100 + '%';
+                const duration = 5 + Math.random() * 8;
+                flower.style.animationDuration = duration + 's';
+                flower.style.animationDelay = Math.random() * 5 + 's';
+                flower.style.opacity = 0.4 + Math.random() * 0.4;
+                rainContainer.appendChild(flower);
+
+                setTimeout(() => {
+                    if (flower.parentNode) flower.remove();
+                }, duration * 1000 + 1000);
+            }
+
+            setInterval(createFlower, 400);
+            for (let i = 0; i < 15; i++) {
+                setTimeout(createFlower, i * 150);
+            }
+
+            // Envelope open/close with auto music
+            const envelope = document.getElementById('envelope');
+            const wrapper = document.getElementById('envelopeWrapper');
+            const audio = document.getElementById('bgMusic');
+            const errorMsg = document.getElementById('audioErrorMessage');
+            
+            // Set volume
+            audio.volume = 0.4;
+            
+            // Cek apakah audio bisa dimuat
+            audio.addEventListener('error', function(e) {
+                console.log('Audio error:', e);
+                errorMsg.classList.add('visible');
+            });
+            
+            // Coba load audio
+            audio.load();
+
+            wrapper.addEventListener('click', function(e) {
+                e.stopPropagation();
+                envelope.classList.toggle('open');
+
+                // Flower burst when opened
+                if (envelope.classList.contains('open')) {
+                    for (let i = 0; i < 8; i++) {
+                        setTimeout(() => {
+                            createFlower();
+                        }, i * 60);
+                    }
+                    
+                    // Auto-play music when envelope opens
+                    audio.play().then(() => {
+                        console.log('Audio playing');
+                        errorMsg.classList.remove('visible');
+                    }).catch(error => {
+                        console.log('Playback failed:', error);
+                        // Tampilkan pesan error jika audio gagal
+                        errorMsg.classList.add('visible');
+                        
+                        // Coba sekali lagi dengan user interaction
+                        setTimeout(() => {
+                            audio.play().catch(e => {});
+                        }, 500);
+                    });
+                } else {
+                    // Pause music when envelope closes
+                    audio.pause();
+                }
+            });
+
+            // Optional: handle ketika audio siap
+            audio.addEventListener('canplaythrough', function() {
+                console.log('Audio ready to play');
+            });
+            
+        })();
+    </script>
+
+    <style>
+        .envelope-wrapper {
+            filter: drop-shadow(0 15px 20px #f7b8cb);
+        }
+        .letter .message {
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+        }
+        .heart-flap {
+            transition: top 0.3s;
+        }
+        .envelope::before, .heart-flap, .seal {
+            pointer-events: none;
+        }
+    </style>
+</body>
+</html>
